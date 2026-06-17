@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Life Situation Advisor — AI Build Workshop Demo</title>
+  <meta name="description" content="Tell your situation. Get pattern-matched advice — archetype, pitfalls, opportunities, next steps." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    .glass { background: rgba(255,255,255,0.75); backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.6); }
+    .prose h2 { font-size: 1.125rem; font-weight: 700; color: #0f172a; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+    .prose h2:first-child { margin-top: 0; }
+    .prose p { margin: 0.5rem 0; line-height: 1.6; color: #334155; }
+    .prose ol, .prose ul { margin: 0.5rem 0; padding-left: 1.25rem; color: #334155; line-height: 1.65; }
+    .prose li { margin: 0.25rem 0; }
+    .prose strong { color: #0f172a; font-weight: 600; }
+    .cursor::after { content: '▍'; animation: blink 1s steps(2) infinite; color: #64748b; margin-left: 2px; }
+    @keyframes blink { to { visibility: hidden; } }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-rose-50 text-slate-900">
+  <main class="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
+    <header class="text-center mb-10">
+      <p class="text-xs uppercase tracking-[0.2em] text-slate-500 font-semibold mb-3">AI Build Workshop · Tier 2 Demo</p>
+      <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-slate-900">Life Situation Advisor</h1>
+      <p class="text-base text-slate-600 mt-3 max-w-xl mx-auto leading-relaxed">
+        Tell your situation. Get pattern-matched advice — your archetype, similar people, pitfalls, opportunities, and the next three small steps.
+      </p>
+    </header>
+
+    <!-- Form -->
+    <section id="form-card" class="glass rounded-3xl p-6 sm:p-8 shadow-xl mb-6">
+      <form id="form" class="space-y-5">
+        <div class="grid sm:grid-cols-2 gap-4">
+          <label class="block">
+            <span class="text-sm font-semibold text-slate-700">First name <span class="text-slate-400 font-normal">(optional)</span></span>
+            <input type="text" name="name" placeholder="Sara" class="mt-1 w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-white/80 focus:bg-white focus:border-slate-500 focus:outline-none transition" />
+          </label>
+          <label class="block">
+            <span class="text-sm font-semibold text-slate-700">Age band</span>
+            <select name="ageBand" required class="mt-1 w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-white/80 focus:bg-white focus:border-slate-500 focus:outline-none transition">
+              <option value="">Pick one…</option>
+              <option>18–25</option>
+              <option>26–35</option>
+              <option>36–45</option>
+              <option>46–60</option>
+              <option>60+</option>
+            </select>
+          </label>
+        </div>
+
+        <label class="block">
+          <span class="text-sm font-semibold text-slate-700">Life stage</span>
+          <input type="text" name="lifeStage" required placeholder="e.g. single grad student · married with 2 kids · empty-nester" class="mt-1 w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-white/80 focus:bg-white focus:border-slate-500 focus:outline-none transition" />
+        </label>
+
+        <fieldset>
+          <legend class="text-sm font-semibold text-slate-700 mb-2">Focus domains <span class="text-slate-400 font-normal">(pick 1-3)</span></legend>
+          <div class="flex flex-wrap gap-2">
+            <label class="cursor-pointer"><input type="checkbox" name="domain" value="Career" class="peer sr-only"><span class="px-3 py-1.5 rounded-full border border-slate-200 bg-white/60 text-sm peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 transition">Career</span></label>
+            <label class="cursor-pointer"><input type="checkbox" name="domain" value="Health" class="peer sr-only"><span class="px-3 py-1.5 rounded-full border border-slate-200 bg-white/60 text-sm peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 transition">Health</span></label>
+            <label class="cursor-pointer"><input type="checkbox" name="domain" value="Mental" class="peer sr-only"><span class="px-3 py-1.5 rounded-full border border-slate-200 bg-white/60 text-sm peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 transition">Mental</span></label>
+            <label class="cursor-pointer"><input type="checkbox" name="domain" value="Spiritual" class="peer sr-only"><span class="px-3 py-1.5 rounded-full border border-slate-200 bg-white/60 text-sm peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 transition">Spiritual</span></label>
+            <label class="cursor-pointer"><input type="checkbox" name="domain" value="Relationships" class="peer sr-only"><span class="px-3 py-1.5 rounded-full border border-slate-200 bg-white/60 text-sm peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 transition">Relationships</span></label>
+            <label class="cursor-pointer"><input type="checkbox" name="domain" value="Financial" class="peer sr-only"><span class="px-3 py-1.5 rounded-full border border-slate-200 bg-white/60 text-sm peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 transition">Financial</span></label>
+          </div>
+        </fieldset>
+
+        <label class="block">
+          <span class="text-sm font-semibold text-slate-700">What's going on right now?</span>
+          <textarea name="situation" required rows="3" placeholder="A short, honest paragraph. The more specific, the better the advice." class="mt-1 w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-white/80 focus:bg-white focus:border-slate-500 focus:outline-none transition resize-none"></textarea>
+        </label>
+
+        <label class="block">
+          <span class="text-sm font-semibold text-slate-700">The specific question or dilemma</span>
+          <textarea name="dilemma" required rows="2" placeholder="One thing you're wrestling with. e.g. 'Should I leave my stable job to start a business?'" class="mt-1 w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-white/80 focus:bg-white focus:border-slate-500 focus:outline-none transition resize-none"></textarea>
+        </label>
+
+        <button type="submit" id="submit" class="w-full bg-slate-900 text-white font-semibold py-3 rounded-full hover:bg-slate-800 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed transition">
+          Get my advice →
+        </button>
+        <p class="text-xs text-slate-500 text-center">
+          Nothing is saved. Your words go to Claude (Anthropic), come back as advice, then evaporate.
+        </p>
+      </form>
+    </section>
+
+    <!-- Response -->
+    <section id="response-card" class="glass rounded-3xl p-6 sm:p-8 shadow-xl mb-6 hidden">
+      <header class="flex items-center justify-between mb-4">
+        <p class="text-xs uppercase tracking-[0.2em] text-slate-500 font-semibold">Your reading</p>
+        <button id="reset" class="text-xs text-slate-500 hover:text-slate-900 underline">New session</button>
+      </header>
+      <article id="response" class="prose"></article>
+    </section>
+
+    <footer class="text-center text-xs text-slate-500 mt-8">
+      Tier 2 demo — built with Claude Code, deployed on Cloudflare Pages, powered by Anthropic Claude.
+      <br>
+      <a href="https://github.com/profkemalaydin/life-advisor-demo" class="underline hover:text-slate-900">Source on GitHub</a> ·
+      <a href="https://build.safescreensinitiative.org" class="underline hover:text-slate-900">Workshop info</a>
+    </footer>
+  </main>
+
+  <script>
+    const form = document.getElementById('form');
+    const submitBtn = document.getElementById('submit');
+    const formCard = document.getElementById('form-card');
+    const responseCard = document.getElementById('response-card');
+    const responseEl = document.getElementById('response');
+    const resetBtn = document.getElementById('reset');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Reading your situation…';
+
+      const fd = new FormData(form);
+      const payload = {
+        name:      fd.get('name')?.trim() || null,
+        ageBand:   fd.get('ageBand'),
+        lifeStage: fd.get('lifeStage')?.trim(),
+        domains:   fd.getAll('domain'),
+        situation: fd.get('situation')?.trim(),
+        dilemma:   fd.get('dilemma')?.trim(),
+      };
+
+      try {
+        const res = await fetch('/api/advise', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error || `Server returned ${res.status}`);
+        }
+
+        formCard.classList.add('hidden');
+        responseCard.classList.remove('hidden');
+        responseEl.innerHTML = '<p class="text-slate-500 italic cursor"></p>';
+        responseCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        // Stream parsing — Anthropic SSE format
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        let text = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() ?? '';
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue;
+            try {
+              const event = JSON.parse(line.slice(6));
+              if (event.type === 'content_block_delta' && event.delta?.type === 'text_delta') {
+                text += event.delta.text;
+                responseEl.innerHTML = marked.parse(text) + '<span class="cursor"></span>';
+              }
+            } catch (_) { /* ignore parse hiccups */ }
+          }
+        }
+        // Final clean render (drop cursor)
+        responseEl.innerHTML = marked.parse(text);
+
+      } catch (err) {
+        formCard.classList.remove('hidden');
+        responseCard.classList.add('hidden');
+        responseEl.innerHTML = `<p class="text-red-600">Something didn't work: ${err.message}. Try again.</p>`;
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Get my advice →';
+      }
+    });
+
+    resetBtn.addEventListener('click', () => {
+      responseCard.classList.add('hidden');
+      responseEl.innerHTML = '';
+      formCard.classList.remove('hidden');
+      formCard.scrollIntoView({ behavior: 'smooth' });
+    });
+  </script>
+</body>
+</html>
